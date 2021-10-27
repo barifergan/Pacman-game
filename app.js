@@ -64,7 +64,6 @@ $(document).ready(function() {
     }, false);
 });
 
-
 function initialGamePage() {
     document.getElementById('username_game').innerHTML = "Hello, " + userNameInGame;
     document.getElementById('game_duration').innerHTML = "Game duration : " + time_limit;
@@ -88,7 +87,8 @@ function initialGameBoard() {
     board = new Array();
     cell_height = canvas.height / board_size;
     cell_width = canvas.width / board_size;
-
+    
+   // definr all the board's cells as empty cells
     for (var i = 0; i < board_size; i++) {
         board[i] = new Array();
         for (var j = 0; j < board_size; j++) {
@@ -101,26 +101,30 @@ function initialGameBoard() {
 
 
 function StartGame() {
+    //clear all intervals
     window.clearInterval(pacman_interval);
     window.clearInterval(monsters_interval);
     window.clearInterval(gift_interval);
     window.clearInterval(gift2_interval);
     pacman_lives = 5;
+    
     initialGameBoard();
+    
     score = 0;
     pac_color = "yellow";
     var cnt = 210;
     var pacman_remain = 1;
     start_time = new Date();
     balls = [food_remain - (Math.floor(food_remain * 0.3) + Math.floor(food_remain * 0.1)), Math.floor(food_remain * 0.3), Math.floor(food_remain * 0.1)]
+    
     create_monsters();
     initialGamePage();
     createWalls();
+    
     for (var i = 0; i < board_size - 1; i++) {
         for (var j = 0; j < board_size - 1; j++) {
             var randomNum = Math.random();
-            if (board[i][j] != 4) {
-
+            if (board[i][j] != 4) { //if cell is not wall
                 if (randomNum < (1.0 * (pacman_remain) / cnt)) {
                     shape.i = i;
                     shape.j = j;
@@ -152,9 +156,11 @@ function StartGame() {
         board[emptyCell[0]][emptyCell[1]] = 5;
         balls[2]--
     }
+    
     food_remain = food_settings
     create_gift();
     keysDown = {};
+    
     document.addEventListener(
         "keydown",
         function(e) {
@@ -169,6 +175,7 @@ function StartGame() {
         },
         false
     );
+    
     ball_position = 190
     pacman_interval = setInterval(UpdatePacmanPosition, 150);
     monsters_interval = setInterval(UpdateMonstersPosition, 450);
@@ -177,7 +184,7 @@ function StartGame() {
 }
 
 function createWalls() {
-
+    // create frame walls
     for (var i = 0; i < board_size; i++) {
         for (var j = 0; j < board_size; j++) {
             if (i == 0 || i == (board_size - 1) || j == 0 || j == (board_size - 1)) {
@@ -185,7 +192,7 @@ function createWalls() {
             }
         }
     }
-
+    // inside walls
     board[1][8] = 4;
     board[2][2] = 4;
     board[2][3] = 4;
@@ -213,6 +220,7 @@ function createWalls() {
     board[9][3] = 4;
     board[9][8] = 4;
 
+    // duplicate the above walls
     for (var i = 1; i < board_size / 2; i++) {
         let index = 1;
         for (var j = 10; j < board_size - 1; j++) {
@@ -230,6 +238,7 @@ function createWalls() {
     }
 
 }
+
 
 function getNextBall() {
     if (randomBall == 2) randomBall = 0;
@@ -318,12 +327,12 @@ function Draw() {
 }
 
 
-function draw_monster(monster_index) { //put a picture
+function draw_monster(monster_index) {
     let monster = monsters[monster_index];
     context.drawImage(monster.image, cell_height * monster.x, cell_width * monster.y, cell_height, cell_width)
 }
 
-function draw_gift() { //put a picture
+function draw_gift() { 
     if (gift.show) context.drawImage(gift.image, cell_height * gift.x, cell_width * gift.y, cell_height, cell_width)
     if (gift2.show) context.drawImage(gift2.image, cell_height * gift2.x, cell_width * gift2.y, cell_height, cell_width)
     if (clock.show) context.drawImage(clock.image, cell_height * clock.x, cell_width * clock.y, cell_height, cell_width)
@@ -755,7 +764,7 @@ function hide(divId) {
     $('#' + divId).hide();
 }
 
-function updateGridDetails() {
+function updateGridDetails() { 
     checkKeyValidation(document.getElementById("up").value, "up")
     checkKeyValidation(document.getElementById("down").value, "down")
     checkKeyValidation(document.getElementById("left").value, "left")
@@ -811,6 +820,8 @@ function displayKeyCode(event, number) {
 }
 
 function randomize() {
+    // Initializes random data to the initialGame page
+    
     upkey = "ArrowUp";
     document.getElementById("up").value = upkey
     downkey = "ArrowDown"
@@ -862,6 +873,8 @@ function checkKeyValidation(key, role) {
     }
     return true;
 }
+
+// validation
 
 $.validator.addMethod("validPassword", function(value) {
     return /^(?=.*[A-Za-z])(?=.*\d)[0-9a-zA-Z]{6,}$/.test(value);
@@ -1066,6 +1079,7 @@ function get_brightness(r, g, b) {
     return text_color
 }
 
+// color as hex to rgb color
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
